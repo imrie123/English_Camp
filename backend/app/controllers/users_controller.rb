@@ -23,6 +23,11 @@ class UsersController < ApplicationController
       render "error", formats: :json, handlers: :jbuilder, status: :unauthorized
     end
   end
+
+  def sign_out
+    FirebaseService::SignOut.new(session[:token]).call
+    head :ok
+  end
   private
 
   def user_params
