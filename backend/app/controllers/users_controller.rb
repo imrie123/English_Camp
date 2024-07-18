@@ -12,6 +12,17 @@ class UsersController < ApplicationController
       end
     end
   end
+
+  def sign_in
+    @response = FirebaseService::SignIn.new(user_params[:email], user_params[:password]).call
+    if @response["idToken"]
+      @user = User.find_by(email: user_params[:email])
+      render "sign_in", formats: :json, handlers: :jbuilder, status: :ok
+    else
+      @error = @response["error"]["message"]
+      render "error", formats: :json, handlers: :jbuilder, status: :unauthorized
+    end
+  end
   private
 
   def user_params
